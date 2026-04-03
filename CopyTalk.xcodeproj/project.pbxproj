@@ -7,19 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000; };
-		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001; };
-		A10002 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002; };
-		A10003 /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003; };
-		A10004 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004; };
-		A10005 /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005; };
-		A10006 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10006; };
-		A10007 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007; };
-		A10008 /* AppleTTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008; };
-		A10009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10009; };
+		74DF38D92F7FBC7300E46FAB /* CopyTalkAppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 74DF38D82F7FBC7300E46FAB /* CopyTalkAppIcon.icon */; };
+		A10000 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000 /* main.swift */; };
+		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001 /* AppDelegate.swift */; };
+		A10002 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002 /* StatusBarController.swift */; };
+		A10003 /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003 /* TTSService.swift */; };
+		A10004 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004 /* AudioPlayer.swift */; };
+		A10005 /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005 /* TextProcessor.swift */; };
+		A10006 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10006 /* KeychainHelper.swift */; };
+		A10007 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007 /* PreferencesWindowController.swift */; };
+		A10008 /* AppleTTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008 /* AppleTTSService.swift */; };
+		A10009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10009 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		74DF38D82F7FBC7300E46FAB /* CopyTalkAppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = CopyTalkAppIcon.icon; sourceTree = "<group>"; };
 		B10000 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B10001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B10002 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				B10007 /* PreferencesWindowController.swift */,
 				B10008 /* AppleTTSService.swift */,
 				B10009 /* Assets.xcassets */,
+				74DF38D82F7FBC7300E46FAB /* CopyTalkAppIcon.icon */,
 				B10010 /* Info.plist */,
 				B10011 /* CopyTalk.entitlements */,
 			);
@@ -86,7 +89,7 @@
 /* Begin PBXNativeTarget section */
 		T10001 /* CopyTalk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C10003;
+			buildConfigurationList = C10003 /* Build configuration list for PBXNativeTarget "CopyTalk" */;
 			buildPhases = (
 				S10001 /* Sources */,
 				F10001 /* Frameworks */,
@@ -116,7 +119,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C10001;
+			buildConfigurationList = C10001 /* Build configuration list for PBXProject "CopyTalk" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -140,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74DF38D92F7FBC7300E46FAB /* CopyTalkAppIcon.icon in Resources */,
 				A10009 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,7 +285,7 @@
 		C10020 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = CopyTalkAppIcon;
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -305,7 +309,7 @@
 		C10021 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = CopyTalkAppIcon;
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -348,7 +352,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = P10001 /* Project object */;
 }

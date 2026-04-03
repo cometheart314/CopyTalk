@@ -5,6 +5,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Dock アイコン表示設定を反映
+        let showInDock = UserDefaults.standard.bool(forKey: "showInDock")
+        NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
+
         statusBarController = StatusBarController()
 
         // サービスメニューのプロバイダーを登録

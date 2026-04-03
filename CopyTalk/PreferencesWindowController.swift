@@ -18,6 +18,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     private var engineStatusLabel: NSTextField!
     private var statusLabel: NSTextField!
     private var doubleCopySpeakCheckbox: NSButton!
+    private var showInDockCheckbox: NSButton!
     private var launchAtLoginCheckbox: NSButton!
 
     private let ttsService = TTSService()
@@ -26,7 +27,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
     convenience init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 450, height: 416),
+            contentRect: NSRect(x: 0, y: 0, width: 450, height: 410),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -55,7 +56,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         let labelWidth: CGFloat = 110
         let fieldX: CGFloat = margin + labelWidth + 8
         let fieldWidth: CGFloat = 280
-        var y: CGFloat = 366
+        var y: CGFloat = 360
 
         // API Key
         contentView.addSubview(makeLabel("API Key:", frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right))
@@ -124,7 +125,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         contentView.addSubview(speakingRateLabel)
 
         // Status Label
-        y -= 30
+        y -= 16
         statusLabel = NSTextField(labelWithString: "")
         statusLabel.frame = NSRect(x: fieldX, y: y, width: 280, height: 22)
         statusLabel.font = NSFont.systemFont(ofSize: 11)
@@ -132,7 +133,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         contentView.addSubview(statusLabel)
 
         // Separator
-        y -= 20
+        y -= 10
         let separator = NSBox(frame: NSRect(x: margin, y: y, width: 410, height: 1))
         separator.boxType = .separator
         contentView.addSubview(separator)
@@ -143,14 +144,27 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         doubleCopySpeakCheckbox.frame = NSRect(x: fieldX, y: y, width: fieldWidth, height: 22)
         contentView.addSubview(doubleCopySpeakCheckbox)
 
+        // Show in Dock
+        y -= 26
+        showInDockCheckbox = NSButton(checkboxWithTitle: "Show Icon in Dock".localized, target: self, action: #selector(showInDockChanged))
+        showInDockCheckbox.frame = NSRect(x: fieldX, y: y, width: fieldWidth, height: 22)
+        contentView.addSubview(showInDockCheckbox)
+
         // Launch at Login
         y -= 26
         launchAtLoginCheckbox = NSButton(checkboxWithTitle: "Launch at Login".localized, target: self, action: #selector(launchAtLoginChanged))
         launchAtLoginCheckbox.frame = NSRect(x: fieldX, y: y, width: fieldWidth, height: 22)
         contentView.addSubview(launchAtLoginCheckbox)
 
-        // Info
-        y -= 50
+        // Defaults Button
+        y -= 36
+        let defaultsButton = NSButton(title: "Defaults", target: self, action: #selector(resetToDefaults))
+        defaultsButton.bezelStyle = .rounded
+        defaultsButton.frame = NSRect(x: margin, y: y, width: 90, height: 28)
+        contentView.addSubview(defaultsButton)
+
+        // Info (最下段)
+        y -= 60
         let infoLabel = NSTextField(wrappingLabelWithString: "CopyTalk reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above.".localized)
         infoLabel.frame = NSRect(x: margin, y: y, width: 410, height: 44)
         infoLabel.font = NSFont.systemFont(ofSize: 11)
@@ -209,6 +223,8 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     private func loadSettings() {
         if let key = KeychainHelper.getAPIKey() {
             apiKeyField.stringValue = key
+        } else {
+            apiKeyField.stringValue = ""
         }
 
         updateVoicePopups()
@@ -222,6 +238,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         updateEngineState()
 
         doubleCopySpeakCheckbox.state = UserDefaults.standard.bool(forKey: "doubleCopySpeak") ? .on : .off
+        showInDockCheckbox.state = UserDefaults.standard.bool(forKey: "showInDock") ? .on : .off
         launchAtLoginCheckbox.state = (SMAppService.mainApp.status == .enabled) ? .on : .off
     }
 
@@ -287,6 +304,12 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         UserDefaults.standard.set(sender.state == .on, forKey: "doubleCopySpeak")
     }
 
+    @objc private func showInDockChanged(_ sender: NSButton) {
+        let show = sender.state == .on
+        UserDefaults.standard.set(show, forKey: "showInDock")
+        NSApp.setActivationPolicy(show ? .regular : .accessory)
+    }
+
     @objc private func launchAtLoginChanged(_ sender: NSButton) {
         let enable = sender.state == .on
         do {
@@ -303,6 +326,33 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
             alert.alertStyle = .warning
             alert.runModal()
         }
+    }
+
+    @objc private func resetToDefaults(_ sender: NSButton) {
+        let alert = NSAlert()
+        alert.messageText = "Reset to Defaults".localized
+        alert.informativeText = "Are you sure you want to reset all settings to their default values?".localized
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Reset".localized)
+        alert.addButton(withTitle: "Cancel".localized)
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        // API Key
+        KeychainHelper.deleteAPIKey()
+
+        // UserDefaults
+        UserDefaults.standard.removeObject(forKey: "japaneseVoice")
+        UserDefaults.standard.removeObject(forKey: "englishVoice")
+        UserDefaults.standard.removeObject(forKey: "speakingRate")
+        UserDefaults.standard.set(true, forKey: "doubleCopySpeak")
+        UserDefaults.standard.set(true, forKey: "showInDock")
+
+        // Dock 表示を反映
+        NSApp.setActivationPolicy(.regular)
+
+        // UI を再読み込み
+        loadSettings()
     }
 
     @objc private func testSpeakJapanese(_ sender: NSButton) {
