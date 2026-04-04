@@ -82,6 +82,10 @@ class StatusBarController {
         prefsItem.target = self
         menu.addItem(prefsItem)
 
+        let supportItem = NSMenuItem(title: "Support Page".localized, action: #selector(openSupportPage), keyEquivalent: "")
+        supportItem.target = self
+        menu.addItem(supportItem)
+
         menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(title: "Quit CopyTalk".localized, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
@@ -152,6 +156,12 @@ class StatusBarController {
     @objc private func openPreferences() {
         PreferencesWindowController.shared.showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    @objc private func openSupportPage() {
+        if let url = URL(string: "https://cometheart314.github.io/CopyTalk/") {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     // MARK: - Speech

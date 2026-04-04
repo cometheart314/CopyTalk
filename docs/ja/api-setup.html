@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Cloud API キーの取得方法 - CopyTalk</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.step { margin-bottom: 40px; }
+.step h3 { font-size: 18px; color: #0f3460; margin-bottom: 12px; }
+.step h3 .step-number {
+  display: inline-block;
+  background: #0f3460;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-size: 14px;
+  margin-right: 8px;
+}
+.note {
+  background: #f0f4ff;
+  border-left: 4px solid #0066cc;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  border-radius: 0 8px 8px 0;
+}
+.warning {
+  background: #fff8e6;
+  border-left: 4px solid #f0a000;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  border-radius: 0 8px 8px 0;
+}
+.link-btn {
+  display: inline-block;
+  background: #0066cc;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.link-btn:hover { background: #0055aa; }
+ol.sub-steps { padding-left: 20px; margin-top: 8px; }
+ol.sub-steps li { margin-bottom: 8px; }
+code {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../en/api-setup.html">English</a>
+  <a href="index.html">トップページ</a>
+</nav>
+<header>
+  <h1>Google Cloud API キーの取得方法</h1>
+  <p>高品質な Neural2 音声を使うための設定ガイド</p>
+</header>
+<main>
+  <section>
+    <p>CopyTalk は API キーなしでも Apple 標準音声で読み上げができますが、Google Cloud Text-to-Speech の API キーを設定すると、より自然で高品質な Neural2 音声が使えるようになります。</p>
+    <div class="note">
+      <strong>無料枠について：</strong>Google Cloud Text-to-Speech には毎月の無料枠があります。Neural2 音声は月に100万文字まで無料で利用できます（2026年4月現在）。個人利用であれば無料枠内で収まることがほとんどです。
+    </div>
+  </section>
+
+  <section>
+    <h2>手順</h2>
+
+    <div class="step">
+      <h3><span class="step-number">1</span>Google アカウントでログイン</h3>
+      <p>Google Cloud Console にアクセスし、Google アカウントでログインします。</p>
+      <a href="https://console.cloud.google.com/" class="link-btn" target="_blank" rel="noopener">Google Cloud Console を開く</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">2</span>プロジェクトを作成</h3>
+      <ol class="sub-steps">
+        <li>画面上部のプロジェクト選択ドロップダウンをクリック</li>
+        <li>「<strong>新しいプロジェクト</strong>」をクリック</li>
+        <li>プロジェクト名に任意の名前を入力（例: <code>CopyTalk</code>）</li>
+        <li>「<strong>作成</strong>」をクリック</li>
+        <li>作成したプロジェクトが選択されていることを確認</li>
+      </ol>
+      <div class="note">
+        初めて Google Cloud を使う場合、利用規約への同意を求められることがあります。
+      </div>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">3</span>請求先アカウントを設定</h3>
+      <p>API を使用するには請求先アカウントの設定が必要です（無料枠内であれば課金されません）。</p>
+      <ol class="sub-steps">
+        <li>左メニューの「<strong>お支払い</strong>」をクリック</li>
+        <li>「<strong>請求先アカウントをリンク</strong>」をクリック</li>
+        <li>クレジットカード情報を入力して設定を完了</li>
+      </ol>
+      <div class="warning">
+        <strong>注意：</strong>無料枠を超えた場合のみ課金されます。心配な場合は、後述の「予算アラートの設定」で上限を設定することをおすすめします。
+      </div>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">4</span>Text-to-Speech API を有効化</h3>
+      <ol class="sub-steps">
+        <li>以下のリンクから Text-to-Speech API のページを開きます</li>
+        <li>「<strong>有効にする</strong>」ボタンをクリック</li>
+      </ol>
+      <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" class="link-btn" target="_blank" rel="noopener">Text-to-Speech API ページを開く</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">5</span>API キーを作成</h3>
+      <ol class="sub-steps">
+        <li>以下のリンクから「認証情報」ページを開きます</li>
+        <li>画面上部の「<strong>+ 認証情報を作成</strong>」をクリック</li>
+        <li>「<strong>API キー</strong>」を選択</li>
+        <li>API キーが生成されます。表示されたキーをコピーしてください</li>
+      </ol>
+      <a href="https://console.cloud.google.com/apis/credentials" class="link-btn" target="_blank" rel="noopener">認証情報ページを開く</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">6</span>API キーを制限（推奨）</h3>
+      <p>セキュリティのため、API キーの使用を Text-to-Speech API のみに制限することをおすすめします。</p>
+      <ol class="sub-steps">
+        <li>作成した API キーの名前をクリック</li>
+        <li>「<strong>API の制限</strong>」セクションで「<strong>キーを制限</strong>」を選択</li>
+        <li>ドロップダウンから「<strong>Cloud Text-to-Speech API</strong>」を選択</li>
+        <li>「<strong>保存</strong>」をクリック</li>
+      </ol>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">7</span>CopyTalk に API キーを設定</h3>
+      <ol class="sub-steps">
+        <li>CopyTalk のメニューバーアイコンをクリック</li>
+        <li>「<strong>Settings...</strong>」を選択</li>
+        <li>「<strong>API Key</strong>」フィールドにコピーした API キーを貼り付け</li>
+        <li>ステータスが「Using Google Cloud Text-to-Speech」に変わったら設定完了です</li>
+        <li>「<strong>Test</strong>」ボタンで音声を確認できます</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>予算アラートの設定（おすすめ）</h2>
+    <p>想定外の課金を防ぐため、予算アラートを設定しておくと安心です。</p>
+    <ol class="sub-steps">
+      <li>Google Cloud Console の「<strong>お支払い</strong>」→「<strong>予算とアラート</strong>」を開く</li>
+      <li>「<strong>予算を作成</strong>」をクリック</li>
+      <li>月額の予算額を設定（例: 100円）</li>
+      <li>アラートのしきい値を設定（50%、90%、100% など）</li>
+    </ol>
+    <div class="note">
+      予算アラートは通知のみで、自動的に API を停止するものではありません。しかし、無料枠を超えそうな場合に事前に知ることができます。
+    </div>
+  </section>
+
+  <section>
+    <h2>トラブルシューティング</h2>
+    <h3>「API key not valid」エラーが出る</h3>
+    <ul>
+      <li>API キーが正しくコピーされているか確認してください</li>
+      <li>Text-to-Speech API が有効になっているか確認してください</li>
+      <li>請求先アカウントがプロジェクトにリンクされているか確認してください</li>
+    </ul>
+
+    <h3>「Permission denied」エラーが出る</h3>
+    <ul>
+      <li>API キーの制限が正しく設定されているか確認してください</li>
+      <li>「Cloud Text-to-Speech API」が許可リストに含まれているか確認してください</li>
+    </ul>
+
+    <h3>音声が再生されない</h3>
+    <ul>
+      <li>macOS のサウンド出力設定を確認してください</li>
+      <li>Settings の「Test」ボタンでエラーメッセージを確認してください</li>
+    </ul>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2026 Satoshi Matsumoto. All rights reserved.</p>
+  <p><a href="privacy.html">プライバシーポリシー</a> | <a href="index.html">トップページ</a></p>
+</footer>
+</body>
+</html>

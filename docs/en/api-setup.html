@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Get a Google Cloud API Key - CopyTalk</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.step { margin-bottom: 40px; }
+.step h3 { font-size: 18px; color: #0f3460; margin-bottom: 12px; }
+.step h3 .step-number {
+  display: inline-block;
+  background: #0f3460;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-size: 14px;
+  margin-right: 8px;
+}
+.note {
+  background: #f0f4ff;
+  border-left: 4px solid #0066cc;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  border-radius: 0 8px 8px 0;
+}
+.warning {
+  background: #fff8e6;
+  border-left: 4px solid #f0a000;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  border-radius: 0 8px 8px 0;
+}
+.link-btn {
+  display: inline-block;
+  background: #0066cc;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.link-btn:hover { background: #0055aa; }
+ol.sub-steps { padding-left: 20px; margin-top: 8px; }
+ol.sub-steps li { margin-bottom: 8px; }
+code {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../ja/api-setup.html">日本語</a>
+  <a href="index.html">Home</a>
+</nav>
+<header>
+  <h1>How to Get a Google Cloud API Key</h1>
+  <p>Setup guide for high-quality Neural2 voices</p>
+</header>
+<main>
+  <section>
+    <p>CopyTalk works out of the box with Apple's built-in voices, but by setting up a Google Cloud Text-to-Speech API key, you can upgrade to more natural-sounding Neural2 voices.</p>
+    <div class="note">
+      <strong>Free tier:</strong> Google Cloud Text-to-Speech includes a monthly free tier. Neural2 voices are free for up to 1 million characters per month (as of April 2026). Personal use typically stays well within this limit.
+    </div>
+  </section>
+
+  <section>
+    <h2>Steps</h2>
+
+    <div class="step">
+      <h3><span class="step-number">1</span>Sign in to Google Cloud</h3>
+      <p>Open the Google Cloud Console and sign in with your Google account.</p>
+      <a href="https://console.cloud.google.com/" class="link-btn" target="_blank" rel="noopener">Open Google Cloud Console</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">2</span>Create a Project</h3>
+      <ol class="sub-steps">
+        <li>Click the project selector dropdown at the top of the page</li>
+        <li>Click "<strong>New Project</strong>"</li>
+        <li>Enter a project name (e.g., <code>CopyTalk</code>)</li>
+        <li>Click "<strong>Create</strong>"</li>
+        <li>Make sure the newly created project is selected</li>
+      </ol>
+      <div class="note">
+        If this is your first time using Google Cloud, you may be asked to agree to the terms of service.
+      </div>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">3</span>Set Up a Billing Account</h3>
+      <p>A billing account is required to use APIs (you won't be charged if you stay within the free tier).</p>
+      <ol class="sub-steps">
+        <li>Click "<strong>Billing</strong>" in the left menu</li>
+        <li>Click "<strong>Link a billing account</strong>"</li>
+        <li>Enter your credit card information to complete the setup</li>
+      </ol>
+      <div class="warning">
+        <strong>Note:</strong> You will only be charged if you exceed the free tier. If concerned, see "Setting Up Budget Alerts" below to set a spending limit.
+      </div>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">4</span>Enable the Text-to-Speech API</h3>
+      <ol class="sub-steps">
+        <li>Open the Text-to-Speech API page using the link below</li>
+        <li>Click the "<strong>Enable</strong>" button</li>
+      </ol>
+      <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" class="link-btn" target="_blank" rel="noopener">Open Text-to-Speech API page</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">5</span>Create an API Key</h3>
+      <ol class="sub-steps">
+        <li>Open the Credentials page using the link below</li>
+        <li>Click "<strong>+ Create Credentials</strong>" at the top</li>
+        <li>Select "<strong>API key</strong>"</li>
+        <li>An API key will be generated. Copy the displayed key</li>
+      </ol>
+      <a href="https://console.cloud.google.com/apis/credentials" class="link-btn" target="_blank" rel="noopener">Open Credentials page</a>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">6</span>Restrict the API Key (Recommended)</h3>
+      <p>For security, it's recommended to restrict your API key to only the Text-to-Speech API.</p>
+      <ol class="sub-steps">
+        <li>Click on the name of the API key you just created</li>
+        <li>Under "<strong>API restrictions</strong>", select "<strong>Restrict key</strong>"</li>
+        <li>Select "<strong>Cloud Text-to-Speech API</strong>" from the dropdown</li>
+        <li>Click "<strong>Save</strong>"</li>
+      </ol>
+    </div>
+
+    <div class="step">
+      <h3><span class="step-number">7</span>Set the API Key in CopyTalk</h3>
+      <ol class="sub-steps">
+        <li>Click the CopyTalk icon in the menu bar</li>
+        <li>Select "<strong>Settings...</strong>"</li>
+        <li>Paste the copied API key into the "<strong>API Key</strong>" field</li>
+        <li>The status should change to "Using Google Cloud Text-to-Speech"</li>
+        <li>Use the "<strong>Test</strong>" buttons to verify the voice</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Setting Up Budget Alerts (Recommended)</h2>
+    <p>To prevent unexpected charges, it's a good idea to set up budget alerts.</p>
+    <ol class="sub-steps">
+      <li>In Google Cloud Console, go to "<strong>Billing</strong>" → "<strong>Budgets &amp; alerts</strong>"</li>
+      <li>Click "<strong>Create budget</strong>"</li>
+      <li>Set a monthly budget amount (e.g., $1)</li>
+      <li>Configure alert thresholds (50%, 90%, 100%, etc.)</li>
+    </ol>
+    <div class="note">
+      Budget alerts are notifications only and do not automatically stop API usage. However, they help you know in advance if you're approaching the free tier limit.
+    </div>
+  </section>
+
+  <section>
+    <h2>Troubleshooting</h2>
+    <h3>"API key not valid" error</h3>
+    <ul>
+      <li>Verify the API key was copied correctly</li>
+      <li>Check that the Text-to-Speech API is enabled</li>
+      <li>Ensure a billing account is linked to your project</li>
+    </ul>
+
+    <h3>"Permission denied" error</h3>
+    <ul>
+      <li>Check that the API key restrictions are configured correctly</li>
+      <li>Ensure "Cloud Text-to-Speech API" is in the allowed list</li>
+    </ul>
+
+    <h3>No audio playback</h3>
+    <ul>
+      <li>Check your macOS sound output settings</li>
+      <li>Use the "Test" button in Settings to check for error messages</li>
+    </ul>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2026 Satoshi Matsumoto. All rights reserved.</p>
+  <p><a href="privacy.html">Privacy Policy</a> | <a href="index.html">Home</a></p>
+</footer>
+</body>
+</html>
