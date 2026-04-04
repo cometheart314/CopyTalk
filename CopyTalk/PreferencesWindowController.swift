@@ -304,9 +304,29 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         englishVoicePopup.isEnabled = hasAPIKey
 
         if hasAPIKey {
-            engineStatusLabel.stringValue = "Using Google Cloud Text-to-Speech".localized
+            engineStatusLabel.attributedStringValue = NSAttributedString(
+                string: "Using Google Cloud Text-to-Speech".localized,
+                attributes: [.font: NSFont.systemFont(ofSize: 10), .foregroundColor: NSColor.secondaryLabelColor]
+            )
         } else {
-            engineStatusLabel.stringValue = "Using Apple built-in voices".localized
+            let text = NSMutableAttributedString(
+                string: "Using Apple built-in voices".localized + " — ",
+                attributes: [.font: NSFont.systemFont(ofSize: 10), .foregroundColor: NSColor.secondaryLabelColor]
+            )
+            let lang = (Locale.current.language.languageCode?.identifier ?? "en") == "ja" ? "ja" : "en"
+            let link = NSAttributedString(
+                string: "Get API Key".localized,
+                attributes: [
+                    .font: NSFont.systemFont(ofSize: 10),
+                    .foregroundColor: NSColor.linkColor,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue,
+                    .link: URL(string: "https://cometheart314.github.io/CopyTalk/\(lang)/api-setup.html")!
+                ]
+            )
+            text.append(link)
+            engineStatusLabel.allowsEditingTextAttributes = true
+            engineStatusLabel.isSelectable = true
+            engineStatusLabel.attributedStringValue = text
         }
     }
 
