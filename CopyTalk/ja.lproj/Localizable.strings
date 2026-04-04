@@ -1,0 +1,39 @@
+/* Menu Items */
+"Read Clipboard" = "クリップボードを読み上げ";
+"Stop" = "停止";
+"Settings..." = "設定...";
+"Support Page" = "サポートページ";
+"Quit CopyTalk" = "CopyTalk を終了";
+"Reading..." = "読み上げ中...";
+
+/* Settings Window */
+"CopyTalk Settings" = "CopyTalk 設定";
+"Speak on Double Copy (⌘C ⌘C)" = "ダブルコピーで読み上げ (⌘C ⌘C)";
+"Show Icon in Dock" = "Dock にアイコンを表示";
+"Launch at Login" = "ログイン時に起動";
+"CopyTalk reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above." = "CopyTalk は Apple 標準の音声でテキストを読み上げます。より高品質な音声を使用するには、上の欄に Google Cloud API キーを設定してください。";
+
+/* Engine Status */
+"Using Google Cloud Text-to-Speech" = "Google Cloud Text-to-Speech を使用中";
+"Using Apple built-in voices" = "Apple 標準音声を使用中";
+"Get API Key" = "API キーを取得";
+
+/* Alerts */
+"Reset to Defaults" = "デフォルトに戻す";
+"Are you sure you want to reset all settings to their default values?" = "すべての設定をデフォルト値に戻してよろしいですか？";
+"Reset" = "リセット";
+"Cancel" = "キャンセル";
+
+/* Labels */
+"API Key:" = "APIキー:";
+"Japanese Voice:" = "日本語音声:";
+"English Voice:" = "英語音声:";
+"Speed:" = "スピード:";
+
+/* Buttons */
+"Test" = "テスト";
+"Defaults" = "デフォルト";
+
+/* Test */
+"Testing..." = "テスト中...";
+"Please enter an API key." = "API キーを入力してください。";

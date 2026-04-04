@@ -18,6 +18,7 @@
 		A10007 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007 /* PreferencesWindowController.swift */; };
 		A10008 /* AppleTTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008 /* AppleTTSService.swift */; };
 		A10009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10009 /* Assets.xcassets */; };
+		A10010 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B10012 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,8 +35,22 @@
 		B10009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10011 /* CopyTalk.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CopyTalk.entitlements; sourceTree = "<group>"; };
+		B10013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B10014 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B10020 /* CopyTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CopyTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXVariantGroup section */
+		B10012 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B10013 /* en */,
+				B10014 /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F10001 /* Frameworks */ = {
@@ -72,6 +87,7 @@
 				74DF38D82F7FBC7300E46FAB /* CopyTalkAppIcon.icon */,
 				B10010 /* Info.plist */,
 				B10011 /* CopyTalk.entitlements */,
+				B10012 /* Localizable.strings */,
 			);
 			path = CopyTalk;
 			sourceTree = "<group>";
@@ -145,6 +161,7 @@
 			files = (
 				74DF38D92F7FBC7300E46FAB /* CopyTalkAppIcon.icon in Resources */,
 				A10009 /* Assets.xcassets in Resources */,
+				A10010 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

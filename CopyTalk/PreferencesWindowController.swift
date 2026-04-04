@@ -59,7 +59,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         var y: CGFloat = 360
 
         // API Key
-        contentView.addSubview(makeLabel("API Key:", frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right))
+        contentView.addSubview(makeLabel("API Key:".localized, frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right))
         apiKeyField = NSSecureTextField(frame: NSRect(x: fieldX, y: y, width: fieldWidth, height: 24))
         apiKeyField.placeholderString = "Enter Google Cloud API Key"
         apiKeyField.delegate = self
@@ -77,13 +77,13 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Japanese Voice
         y -= 26
-        contentView.addSubview(makeLabel("Japanese Voice:", frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        contentView.addSubview(makeLabel("Japanese Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
         japaneseVoicePopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         japaneseVoicePopup.target = self
         japaneseVoicePopup.action = #selector(voiceChanged)
         contentView.addSubview(japaneseVoicePopup)
 
-        testJaButton = NSButton(title: "Test", target: self, action: #selector(testSpeakJapanese))
+        testJaButton = NSButton(title: "Test".localized, target: self, action: #selector(testSpeakJapanese))
         testJaButton.bezelStyle = .rounded
         testJaButton.controlSize = .small
         testJaButton.font = NSFont.systemFont(ofSize: 11)
@@ -92,13 +92,13 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // English Voice
         y -= 36
-        contentView.addSubview(makeLabel("English Voice:", frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        contentView.addSubview(makeLabel("English Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
         englishVoicePopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         englishVoicePopup.target = self
         englishVoicePopup.action = #selector(voiceChanged)
         contentView.addSubview(englishVoicePopup)
 
-        testEnButton = NSButton(title: "Test", target: self, action: #selector(testSpeakEnglish))
+        testEnButton = NSButton(title: "Test".localized, target: self, action: #selector(testSpeakEnglish))
         testEnButton.bezelStyle = .rounded
         testEnButton.controlSize = .small
         testEnButton.font = NSFont.systemFont(ofSize: 11)
@@ -107,7 +107,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Speaking Rate
         y -= 36
-        contentView.addSubview(makeLabel("Speed:", frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        contentView.addSubview(makeLabel("Speed:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
         speakingRateSlider = NSSlider(frame: NSRect(x: fieldX, y: y, width: 220, height: 24))
         speakingRateSlider.minValue = 0.5
         speakingRateSlider.maxValue = 2.0
@@ -158,7 +158,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Defaults Button
         y -= 36
-        let defaultsButton = NSButton(title: "Defaults", target: self, action: #selector(resetToDefaults))
+        let defaultsButton = NSButton(title: "Defaults".localized, target: self, action: #selector(resetToDefaults))
         defaultsButton.bezelStyle = .rounded
         defaultsButton.frame = NSRect(x: margin, y: y, width: 90, height: 28)
         contentView.addSubview(defaultsButton)

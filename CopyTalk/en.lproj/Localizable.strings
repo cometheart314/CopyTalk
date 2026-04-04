@@ -1,0 +1,39 @@
+/* Menu Items */
+"Read Clipboard" = "Read Clipboard";
+"Stop" = "Stop";
+"Settings..." = "Settings...";
+"Support Page" = "Support Page";
+"Quit CopyTalk" = "Quit CopyTalk";
+"Reading..." = "Reading...";
+
+/* Settings Window */
+"CopyTalk Settings" = "CopyTalk Settings";
+"Speak on Double Copy (⌘C ⌘C)" = "Speak on Double Copy (⌘C ⌘C)";
+"Show Icon in Dock" = "Show Icon in Dock";
+"Launch at Login" = "Launch at Login";
+"CopyTalk reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above." = "CopyTalk reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above.";
+
+/* Engine Status */
+"Using Google Cloud Text-to-Speech" = "Using Google Cloud Text-to-Speech";
+"Using Apple built-in voices" = "Using Apple built-in voices";
+"Get API Key" = "Get API Key";
+
+/* Alerts */
+"Reset to Defaults" = "Reset to Defaults";
+"Are you sure you want to reset all settings to their default values?" = "Are you sure you want to reset all settings to their default values?";
+"Reset" = "Reset";
+"Cancel" = "Cancel";
+
+/* Labels */
+"API Key:" = "API Key:";
+"Japanese Voice:" = "Japanese Voice:";
+"English Voice:" = "English Voice:";
+"Speed:" = "Speed:";
+
+/* Buttons */
+"Test" = "Test";
+"Defaults" = "Defaults";
+
+/* Test */
+"Testing..." = "Testing...";
+"Please enter an API key." = "Please enter an API key.";
