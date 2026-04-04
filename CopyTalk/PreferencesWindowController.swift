@@ -170,6 +170,16 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         infoLabel.font = NSFont.systemFont(ofSize: 11)
         infoLabel.textColor = .secondaryLabelColor
         contentView.addSubview(infoLabel)
+
+        // Version (右下)
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+        let versionLabel = NSTextField(labelWithString: "v\(version) (\(build))")
+        versionLabel.font = NSFont.systemFont(ofSize: 10)
+        versionLabel.textColor = .labelColor
+        versionLabel.alignment = .right
+        versionLabel.frame = NSRect(x: margin, y: y - 18, width: 410, height: 14)
+        contentView.addSubview(versionLabel)
     }
 
     private func makeLabel(_ title: String, frame: NSRect, alignment: NSTextAlignment) -> NSTextField {

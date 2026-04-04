@@ -3,7 +3,7 @@ import Cocoa
 class StatusBarController {
 
     private let statusItem: NSStatusItem
-    private let menu = NSMenu()
+    let menu = NSMenu()
     private let readClipboardItem = NSMenuItem()
     private let stopItem = NSMenuItem()
     private let statusMenuItem = NSMenuItem()

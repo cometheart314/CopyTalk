@@ -16,6 +16,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSUpdateDynamicServices()
     }
 
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        return statusBarController.menu
+    }
+
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }

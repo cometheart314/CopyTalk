@@ -3,7 +3,7 @@ import Security
 
 struct KeychainHelper {
 
-    private static let service = "com.example.CopyTalk"
+    private static let service = "jp.co.artman21.copytalk"
     private static let account = "GoogleCloudTTSAPIKey"
 
     /// API キーを Keychain に保存する
