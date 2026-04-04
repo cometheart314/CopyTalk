@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CopyTalk</title>
+<script>
+  const lang = navigator.language || navigator.userLanguage;
+  if (lang && lang.startsWith('ja')) {
+    window.location.replace('ja/');
+  } else {
+    window.location.replace('en/');
+  }
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0;url=en/">
+</noscript>
+</head>
+<body>
+<p><a href="ja/">日本語</a> | <a href="en/">English</a></p>
+</body>
+</html>
