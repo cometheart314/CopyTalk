@@ -40,7 +40,7 @@
 		B10014 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B10016 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B10017 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B10020 /* CopyTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CopyTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10020 /* ClipVoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClipVoice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,7 +87,7 @@
 		G10003 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B10020 /* CopyTalk.app */,
+				B10020 /* ClipVoice.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		T10001 /* CopyTalk */ = {
+		T10001 /* ClipVoice */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C10003 /* Build configuration list for PBXNativeTarget "CopyTalk" */;
+			buildConfigurationList = C10003 /* Build configuration list for PBXNativeTarget "ClipVoice" */;
 			buildPhases = (
 				S10001 /* Sources */,
 				F10001 /* Frameworks */,
@@ -109,7 +109,7 @@
 			);
 			name = ClipVoice;
 			productName = ClipVoice;
-			productReference = B10020 /* CopyTalk.app */;
+			productReference = B10020 /* ClipVoice.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -141,7 +141,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				T10001 /* CopyTalk */,
+				T10001 /* ClipVoice */,
 			);
 		};
 /* End PBXProject section */
@@ -320,11 +320,12 @@
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 260404.1;
+				CURRENT_PROJECT_VERSION = 260405.0;
 				DEVELOPMENT_TEAM = F8FSQZCDV7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CopyTalk/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ClipVoice;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -345,11 +346,12 @@
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 260404.1;
+				CURRENT_PROJECT_VERSION = 260405.0;
 				DEVELOPMENT_TEAM = F8FSQZCDV7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CopyTalk/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ClipVoice;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -375,7 +377,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C10003 /* Build configuration list for PBXNativeTarget "CopyTalk" */ = {
+		C10003 /* Build configuration list for PBXNativeTarget "ClipVoice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C10020 /* Debug */,
