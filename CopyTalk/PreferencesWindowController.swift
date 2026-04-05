@@ -32,7 +32,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
             backing: .buffered,
             defer: false
         )
-        window.title = "CopyTalk Settings".localized
+        window.title = "ClipVoice Settings".localized
         window.isReleasedWhenClosed = false
 
         self.init(window: window)
@@ -165,7 +165,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Info (最下段)
         y -= 60
-        let infoLabel = NSTextField(wrappingLabelWithString: "CopyTalk reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above.".localized)
+        let infoLabel = NSTextField(wrappingLabelWithString: "ClipVoice reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above.".localized)
         infoLabel.frame = NSRect(x: margin, y: y, width: 410, height: 44)
         infoLabel.font = NSFont.systemFont(ofSize: 11)
         infoLabel.textColor = .secondaryLabelColor
@@ -320,7 +320,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
                     .font: NSFont.systemFont(ofSize: 10),
                     .foregroundColor: NSColor.linkColor,
                     .underlineStyle: NSUnderlineStyle.single.rawValue,
-                    .link: URL(string: "https://cometheart314.github.io/CopyTalk/\(lang)/api-setup.html")!
+                    .link: URL(string: "https://cometheart314.github.io/ClipVoice/\(lang)/api-setup.html")!
                 ]
             )
             text.append(link)

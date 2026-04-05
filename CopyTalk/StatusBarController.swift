@@ -29,7 +29,7 @@ class StatusBarController {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
-            if let image = NSImage(systemSymbolName: "speaker.wave.2", accessibilityDescription: "CopyTalk") {
+            if let image = NSImage(systemSymbolName: "speaker.wave.2", accessibilityDescription: "ClipVoice") {
                 image.isTemplate = true
                 button.image = image
             } else {
@@ -89,7 +89,7 @@ class StatusBarController {
 
         menu.addItem(NSMenuItem.separator())
 
-        let quitItem = NSMenuItem(title: "Quit CopyTalk".localized, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit ClipVoice".localized, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quitItem)
     }
 
@@ -166,7 +166,7 @@ class StatusBarController {
     }
 
     @objc private func openSupportPage() {
-        if let url = URL(string: "https://cometheart314.github.io/CopyTalk/") {
+        if let url = URL(string: "https://cometheart314.github.io/ClipVoice/") {
             NSWorkspace.shared.open(url)
         }
     }
@@ -300,7 +300,7 @@ class StatusBarController {
             statusMenuItem.isHidden = false
             if let button = statusItem.button {
                 let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
-                if let image = NSImage(systemSymbolName: "speaker.wave.3", accessibilityDescription: "CopyTalk - Speaking")?.withSymbolConfiguration(config) {
+                if let image = NSImage(systemSymbolName: "speaker.wave.3", accessibilityDescription: "ClipVoice - Speaking")?.withSymbolConfiguration(config) {
                     image.isTemplate = true
                     button.image = image
                 }
@@ -309,7 +309,7 @@ class StatusBarController {
             statusMenuItem.isHidden = true
             if let button = statusItem.button {
                 let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
-                if let image = NSImage(systemSymbolName: "speaker.wave.2", accessibilityDescription: "CopyTalk")?.withSymbolConfiguration(config) {
+                if let image = NSImage(systemSymbolName: "speaker.wave.2", accessibilityDescription: "ClipVoice")?.withSymbolConfiguration(config) {
                     image.isTemplate = true
                     button.image = image
                 }

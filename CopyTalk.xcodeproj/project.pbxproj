@@ -107,8 +107,8 @@
 			);
 			dependencies = (
 			);
-			name = CopyTalk;
-			productName = CopyTalk;
+			name = ClipVoice;
+			productName = ClipVoice;
 			productReference = B10020 /* CopyTalk.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -320,7 +320,7 @@
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 260404.0;
+				CURRENT_PROJECT_VERSION = 260404.1;
 				DEVELOPMENT_TEAM = F8FSQZCDV7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -345,7 +345,7 @@
 				CODE_SIGN_ENTITLEMENTS = CopyTalk/CopyTalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 260404.0;
+				CURRENT_PROJECT_VERSION = 260404.1;
 				DEVELOPMENT_TEAM = F8FSQZCDV7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;

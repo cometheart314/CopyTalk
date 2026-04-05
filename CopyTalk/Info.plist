@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>CopyTalk</string>
+	<string>ClipVoice</string>
 	<key>CFBundleDisplayName</key>
-	<string>CopyTalk</string>
+	<string>ClipVoice</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleShortVersionString</key>
@@ -32,14 +32,14 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>CopyTalk - Read Aloud</string>
+				<string>ClipVoice - Read Aloud</string>
 				<key>ja</key>
-				<string>CopyTalk - 読み上げ</string>
+				<string>ClipVoice - 読み上げ</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>readText</string>
 			<key>NSPortName</key>
-			<string>CopyTalk</string>
+			<string>ClipVoice</string>
 			<key>NSSendTypes</key>
 			<array>
 				<string>NSStringPboardType</string>
