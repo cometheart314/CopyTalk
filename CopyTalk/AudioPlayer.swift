@@ -1,5 +1,6 @@
 import AVFoundation
 
+@MainActor
 class AudioPlayer {
 
     private let engine = AVAudioEngine()

@@ -377,6 +377,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         UserDefaults.standard.removeObject(forKey: "speakingRate")
         UserDefaults.standard.set(true, forKey: "doubleCopySpeak")
         UserDefaults.standard.set(true, forKey: "showInDock")
+        UserDefaults.standard.removeObject(forKey: "hasLaunchedBefore")
 
         // Dock 表示を反映
         NSApp.setActivationPolicy(.regular)

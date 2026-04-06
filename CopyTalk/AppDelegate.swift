@@ -1,5 +1,6 @@
 import Cocoa
 
+@MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusBarController: StatusBarController!
@@ -14,6 +15,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // サービスメニューのプロバイダーを登録
         NSApp.servicesProvider = self
         NSUpdateDynamicServices()
+
+        // 初回起動時のみダイアログと設定パネルを表示
+        if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
+            showFirstLaunchAlert()
+        }
+    }
+
+    private func showFirstLaunchAlert() {
+        let alert = NSAlert()
+        alert.messageText = "Welcome to ClipVoice!".localized
+        alert.informativeText = "ClipVoice is ready in the menu bar with a speaker icon. Press ⌘C twice quickly to read selected text aloud.".localized
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Open Settings".localized)
+        alert.runModal()
+
+        PreferencesWindowController.shared.showWindow(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {

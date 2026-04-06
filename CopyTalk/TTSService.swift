@@ -37,14 +37,20 @@ class TTSService {
 
     /// テキストを音声合成して音声データ（Linear16 PCM）を返す
     func synthesize(text: String, language: SpeechLanguage) async throws -> Data {
-        guard let apiKey = KeychainHelper.getAPIKey() else {
+        // MainActor で UserDefaults / KeychainHelper にアクセスする
+        let (apiKey, rate, selectedVoice) = await MainActor.run {
+            let key = KeychainHelper.getAPIKey()
+            let speakingRate = UserDefaults.standard.double(forKey: "speakingRate")
+            let r = speakingRate > 0 ? speakingRate : 1.0
+            let v = self.voiceName(for: language)
+            return (key, r, v)
+        }
+
+        guard let apiKey else {
             throw TTSError.noAPIKey
         }
 
-        let speakingRate = UserDefaults.standard.double(forKey: "speakingRate")
-        let rate = speakingRate > 0 ? speakingRate : 1.0
-
-        let voiceName = voiceName(for: language)
+        let voiceName = selectedVoice
 
         let requestBody: [String: Any] = [
             "input": ["text": text],

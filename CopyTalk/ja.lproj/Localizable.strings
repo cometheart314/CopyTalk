@@ -35,6 +35,11 @@
 "Test" = "テスト";
 "Defaults" = "デフォルト";
 
+/* First Launch */
+"Welcome to ClipVoice!" = "ClipVoice へようこそ！";
+"ClipVoice is ready in the menu bar with a speaker icon. Press ⌘C twice quickly to read selected text aloud." = "ClipVoice はメニューバーにスピーカーアイコン􀊦として常駐します。テキストを選択して ⌘C を2回連打すると読み上げます。";
+"Open Settings" = "設定を開く";
+
 /* Test */
 "Testing..." = "テスト中...";
 "Please enter an API key." = "API キーを入力してください。";

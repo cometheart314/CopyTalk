@@ -1,5 +1,6 @@
 import Cocoa
 
+@MainActor
 class StatusBarController {
 
     private let statusItem: NSStatusItem

@@ -35,6 +35,11 @@
 "Test" = "Test";
 "Defaults" = "Defaults";
 
+/* First Launch */
+"Welcome to ClipVoice!" = "Welcome to ClipVoice!";
+"ClipVoice is ready in the menu bar with a speaker icon. Press ⌘C twice quickly to read selected text aloud." = "ClipVoice is ready in the menu bar with a speaker icon 􀊦. Press ⌘C twice quickly to read selected text aloud.";
+"Open Settings" = "Open Settings";
+
 /* Test */
 "Testing..." = "Testing...";
 "Please enter an API key." = "Please enter an API key.";
