@@ -100,7 +100,7 @@ class StatusBarController {
         lastChangeCount = NSPasteboard.general.changeCount
         lastClipboardContent = nil
         lastClipboardChangeTime = nil
-        clipboardTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
+        clipboardTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             self?.checkClipboard()
         }
     }
@@ -132,7 +132,7 @@ class StatusBarController {
         if let prevContent = lastClipboardContent,
            let prevTime = lastClipboardChangeTime,
            content == prevContent,
-           now.timeIntervalSince(prevTime) < 0.5 {
+           now.timeIntervalSince(prevTime) < 1.0 {
             // Cmd+C 連打を検出 → 読み上げ開始
             lastClipboardContent = nil
             lastClipboardChangeTime = nil
@@ -206,48 +206,54 @@ class StatusBarController {
     }
 
     private func speakWithGoogleTTS(_ text: String) async {
-        let (chunks, paragraphBreaks) = textProcessor.splitText(text)
+        let model = await MainActor.run { TTSModel.current }
+        let (chunks, paragraphBreaks) = textProcessor.splitText(text, model: model)
         guard !chunks.isEmpty else { return }
 
-        // テキスト全体から言語を1回だけ判定し、全チャンクで同じ音声を使う
         let language = textProcessor.detectLanguage(text)
+        let fadeSamples = 480
+        let silenceBytes = Data(count: Int(24000 * 0.6) * MemoryLayout<Int16>.size)
 
-        // 全チャンクの音声を取得
-        var fetchTasks: [Task<Data, Error>] = []
-        for chunk in chunks {
-            fetchTasks.append(fetchAudio(for: chunk, language: language))
+        // 先読みバッファサイズ（現在再生中 + 次の N チャンクを先読み）
+        let lookahead = 3
+
+        // 先読みタスクを管理する配列
+        var prefetchTasks: [Task<Data, Error>] = []
+
+        // 最初の lookahead 分を先読み開始
+        for i in 0..<min(lookahead, chunks.count) {
+            prefetchTasks.append(fetchAudio(for: chunks[i], language: language))
         }
 
-        // 全チャンクの音声データを取得し、フェード処理して結合
-        let silenceBytes = Data(count: Int(24000 * 0.6) * MemoryLayout<Int16>.size) // 0.6秒
-        let fadeSamples = 480 // フェード区間（約20ms @ 24kHz）
-        var combinedData = Data()
+        await audioPlayer.warmUp()
 
-        for (index, task) in fetchTasks.enumerated() {
+        for (index, _) in chunks.enumerated() {
             if Task.isCancelled { return }
 
+            // 次のチャンクの先読みを開始
+            let nextPrefetch = index + lookahead
+            if nextPrefetch < chunks.count {
+                prefetchTasks.append(fetchAudio(for: chunks[nextPrefetch], language: language))
+            }
+
+            // 現在のチャンクの音声データを取得
             do {
-                var audioData = try await task.value
+                var audioData = try await prefetchTasks[index].value
                 Self.applyFades(&audioData, fadeSamples: fadeSamples)
-                combinedData.append(audioData)
 
                 if paragraphBreaks.contains(index) {
-                    combinedData.append(silenceBytes)
+                    audioData.append(silenceBytes)
                 }
+
+                if Task.isCancelled { return }
+                await audioPlayer.playAndWait(data: audioData)
             } catch {
-                if !Task.isCancelled {
-                    print("TTS error for chunk \(index): \(error)")
-                }
-                return
+                if Task.isCancelled { return }
+                print("TTS error for chunk \(index): \(error)")
+                // エラーが発生したチャンクをスキップして次へ続行
+                continue
             }
         }
-
-        if Task.isCancelled { return }
-
-        // オーディオパイプラインを暖めてから一括再生
-        await audioPlayer.warmUp()
-        if Task.isCancelled { return }
-        await audioPlayer.playAndWait(data: combinedData)
     }
 
     // speakWithAppleTTS は廃止 — AppleTTSService.speak(texts:completion:) を直接使用

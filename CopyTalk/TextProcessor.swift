@@ -22,8 +22,13 @@ class TextProcessor {
     /// テキストを段落→文単位で分割する
     /// 最初のチャンクを小さくして読み上げ開始を速くする
     /// paragraphBreaks: 段落の最後にあたるチャンクのインデックス（このチャンクの後にポーズを入れる）
-    func splitText(_ text: String) -> (chunks: [String], paragraphBreaks: Set<Int>) {
-        let maxBytes = 4500 // Google Cloud TTS の制限（5000バイト）に余裕を持たせる
+    func splitText(_ text: String, model: TTSModel = .neural2) -> (chunks: [String], paragraphBreaks: Set<Int>) {
+        // Chirp 3: HD はセンテンス長制限が厳しいため、チャンクを小さくする
+        let maxBytes: Int
+        switch model {
+        case .neural2:  maxBytes = 4500
+        case .chirp3HD: maxBytes = 300  // 約100文字（日本語UTF-8で1文字3バイト）
+        }
 
         // まず段落で分割し、各段落を文単位で分割
         let paragraphs = splitIntoParagraphs(text)
@@ -105,6 +110,7 @@ class TextProcessor {
     }
 
     /// テキストを文単位で分割する
+    /// NLTokenizer で分割後、長すぎる文は句読点で追加分割する
     private func splitIntoSentences(_ text: String) -> [String] {
         var sentences: [String] = []
         let tokenizer = NLTokenizer(unit: .sentence)
@@ -113,7 +119,62 @@ class TextProcessor {
             sentences.append(String(text[range]))
             return true
         }
-        return sentences.isEmpty ? [text] : sentences
+        if sentences.isEmpty { sentences = [text] }
+
+        // 長すぎる文を句読点・読点で追加分割（Chirp 3: HD のセンテンス制限対策）
+        let maxSentenceChars = 100
+        var result: [String] = []
+        for sentence in sentences {
+            if sentence.count <= maxSentenceChars {
+                result.append(sentence)
+            } else {
+                result.append(contentsOf: splitLongSentence(sentence, maxChars: maxSentenceChars))
+            }
+        }
+        return result
+    }
+
+    /// 長い文を句読点・読点・カンマ等で分割する
+    private func splitLongSentence(_ text: String, maxChars: Int) -> [String] {
+        // 分割ポイント: 読点、カンマ、セミコロン、括弧閉じ等
+        let delimiters: [Character] = ["、", "，", ",", ";", "；", "：", ":", "）", ")", "」", "】"]
+        var chunks: [String] = []
+        var current = ""
+
+        for char in text {
+            current.append(char)
+            if current.count >= 30 && delimiters.contains(char) {
+                chunks.append(current)
+                current = ""
+            }
+        }
+        if !current.isEmpty {
+            chunks.append(current)
+        }
+
+        // 分割できなかった場合（句読点なし）は強制的に分割
+        if chunks.count == 1 && chunks[0].count > maxChars {
+            return splitByCharCount(chunks[0], maxChars: maxChars)
+        }
+
+        return chunks
+    }
+
+    /// 文字数で強制分割
+    private func splitByCharCount(_ text: String, maxChars: Int) -> [String] {
+        var chunks: [String] = []
+        var current = ""
+        for char in text {
+            current.append(char)
+            if current.count >= maxChars {
+                chunks.append(current)
+                current = ""
+            }
+        }
+        if !current.isEmpty {
+            chunks.append(current)
+        }
+        return chunks
     }
 
     /// バイト制限に収まるよう文字列を強制分割

@@ -6,27 +6,70 @@ enum SpeechLanguage: String {
     case english = "en-US"
 }
 
+/// TTS モデル
+enum TTSModel: String {
+    case neural2 = "neural2"
+    case chirp3HD = "chirp3HD"
+
+    var displayName: String {
+        switch self {
+        case .neural2: return "Neural2"
+        case .chirp3HD: return "Chirp 3: HD"
+        }
+    }
+
+    static let allCases: [TTSModel] = [.neural2, .chirp3HD]
+
+    /// UserDefaults から現在のモデルを取得
+    static var current: TTSModel {
+        if let saved = UserDefaults.standard.string(forKey: "ttsModel"),
+           let model = TTSModel(rawValue: saved) {
+            return model
+        }
+        return .neural2
+    }
+}
+
 /// 音声の種類
 struct VoiceOption {
     let name: String        // API に送る名前 (例: "ja-JP-Neural2-B")
     let displayName: String // UI に表示する名前
     let language: SpeechLanguage
+    let model: TTSModel
 
     static let allVoices: [VoiceOption] = [
         // Japanese - Neural2
-        VoiceOption(name: "ja-JP-Neural2-B", displayName: "Japanese B (Female)", language: .japanese),
-        VoiceOption(name: "ja-JP-Neural2-C", displayName: "Japanese C (Male)",   language: .japanese),
-        VoiceOption(name: "ja-JP-Neural2-D", displayName: "Japanese D (Male)",   language: .japanese),
+        VoiceOption(name: "ja-JP-Neural2-B", displayName: "Neural2 B (Female)", language: .japanese, model: .neural2),
+        VoiceOption(name: "ja-JP-Neural2-C", displayName: "Neural2 C (Male)",   language: .japanese, model: .neural2),
+        VoiceOption(name: "ja-JP-Neural2-D", displayName: "Neural2 D (Male)",   language: .japanese, model: .neural2),
         // English - Neural2
-        VoiceOption(name: "en-US-Neural2-C", displayName: "English C (Female)",  language: .english),
-        VoiceOption(name: "en-US-Neural2-D", displayName: "English D (Male)",    language: .english),
-        VoiceOption(name: "en-US-Neural2-F", displayName: "English F (Female)",  language: .english),
-        VoiceOption(name: "en-US-Neural2-J", displayName: "English J (Male)",    language: .english),
+        VoiceOption(name: "en-US-Neural2-C", displayName: "Neural2 C (Female)",  language: .english, model: .neural2),
+        VoiceOption(name: "en-US-Neural2-D", displayName: "Neural2 D (Male)",    language: .english, model: .neural2),
+        VoiceOption(name: "en-US-Neural2-F", displayName: "Neural2 F (Female)",  language: .english, model: .neural2),
+        VoiceOption(name: "en-US-Neural2-J", displayName: "Neural2 J (Male)",    language: .english, model: .neural2),
+        // Japanese - Chirp 3: HD
+        VoiceOption(name: "ja-JP-Chirp3-HD-Aoede",  displayName: "Aoede (Female)",  language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Kore",   displayName: "Kore (Female)",   language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Leda",   displayName: "Leda (Female)",   language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Zephyr", displayName: "Zephyr (Female)", language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Puck",   displayName: "Puck (Male)",     language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Charon", displayName: "Charon (Male)",   language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Fenrir", displayName: "Fenrir (Male)",   language: .japanese, model: .chirp3HD),
+        VoiceOption(name: "ja-JP-Chirp3-HD-Orus",   displayName: "Orus (Male)",     language: .japanese, model: .chirp3HD),
+        // English - Chirp 3: HD
+        VoiceOption(name: "en-US-Chirp3-HD-Aoede",  displayName: "Aoede (Female)",  language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Kore",   displayName: "Kore (Female)",   language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Leda",   displayName: "Leda (Female)",   language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Zephyr", displayName: "Zephyr (Female)", language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Puck",   displayName: "Puck (Male)",     language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Charon", displayName: "Charon (Male)",   language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Fenrir", displayName: "Fenrir (Male)",   language: .english, model: .chirp3HD),
+        VoiceOption(name: "en-US-Chirp3-HD-Orus",   displayName: "Orus (Male)",     language: .english, model: .chirp3HD),
     ]
 
-    /// 指定の言語に合う音声を返す
-    static func voices(for language: SpeechLanguage) -> [VoiceOption] {
-        allVoices.filter { $0.language == language }
+    /// 指定の言語・モデルに合う音声を返す
+    static func voices(for language: SpeechLanguage, model: TTSModel) -> [VoiceOption] {
+        allVoices.filter { $0.language == language && $0.model == model }
     }
 }
 
@@ -96,6 +139,7 @@ class TTSService {
 
     /// 言語に応じた音声名を返す（設定から取得）
     private func voiceName(for language: SpeechLanguage) -> String {
+        let model = TTSModel.current
         let key: String
         switch language {
         case .japanese: key = "japaneseVoice"
@@ -103,13 +147,13 @@ class TTSService {
         }
 
         if let saved = UserDefaults.standard.string(forKey: key) {
-            let voices = VoiceOption.voices(for: language)
+            let voices = VoiceOption.voices(for: language, model: model)
             if voices.contains(where: { $0.name == saved }) {
                 return saved
             }
         }
 
-        return VoiceOption.voices(for: language).first?.name ?? "ja-JP-Neural2-B"
+        return VoiceOption.voices(for: language, model: model).first?.name ?? "ja-JP-Neural2-B"
     }
 }
 

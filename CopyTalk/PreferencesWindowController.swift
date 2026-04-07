@@ -9,6 +9,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     }()
 
     private var apiKeyField: NSTextField!
+    private var modelPopup: NSPopUpButton!
     private var japaneseVoicePopup: NSPopUpButton!
     private var englishVoicePopup: NSPopUpButton!
     private var speakingRateSlider: NSSlider!
@@ -27,7 +28,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
     convenience init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 450, height: 410),
+            contentRect: NSRect(x: 0, y: 0, width: 450, height: 440),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -56,7 +57,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         let labelWidth: CGFloat = 110
         let fieldX: CGFloat = margin + labelWidth + 8
         let fieldWidth: CGFloat = 280
-        var y: CGFloat = 360
+        var y: CGFloat = 390
 
         // API Key
         contentView.addSubview(makeLabel("API Key:".localized, frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right))
@@ -75,8 +76,20 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         engineStatusLabel.textColor = .secondaryLabelColor
         contentView.addSubview(engineStatusLabel)
 
+        // Model
+        y -= 30
+        contentView.addSubview(makeLabel("Model:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        modelPopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
+        for model in TTSModel.allCases {
+            modelPopup.addItem(withTitle: model.displayName)
+            modelPopup.lastItem?.representedObject = model.rawValue
+        }
+        modelPopup.target = self
+        modelPopup.action = #selector(modelChanged)
+        contentView.addSubview(modelPopup)
+
         // Japanese Voice
-        y -= 26
+        y -= 30
         contentView.addSubview(makeLabel("Japanese Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
         japaneseVoicePopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         japaneseVoicePopup.target = self
@@ -165,7 +178,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Info (最下段)
         y -= 60
-        let infoLabel = NSTextField(wrappingLabelWithString: "ClipVoice reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above. ClipVoice uses Neural2 voices — free up to 1 million characters per month.".localized)
+        let infoLabel = NSTextField(wrappingLabelWithString: "ClipVoice reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above. Google Cloud TTS is free up to 1 million characters per month.".localized)
         infoLabel.frame = NSRect(x: margin, y: y, width: 410, height: 58)
         infoLabel.font = NSFont.systemFont(ofSize: 11)
         infoLabel.textColor = .secondaryLabelColor
@@ -192,8 +205,10 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     // MARK: - Voice Popup Management
 
     private func updateVoicePopups() {
+        let model = selectedModel()
+
         // Japanese voices
-        let jaVoices = VoiceOption.voices(for: .japanese)
+        let jaVoices = VoiceOption.voices(for: .japanese, model: model)
         japaneseVoicePopup.removeAllItems()
         for voice in jaVoices {
             japaneseVoicePopup.addItem(withTitle: voice.displayName)
@@ -201,7 +216,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         }
 
         // English voices
-        let enVoices = VoiceOption.voices(for: .english)
+        let enVoices = VoiceOption.voices(for: .english, model: model)
         englishVoicePopup.removeAllItems()
         for voice in enVoices {
             englishVoicePopup.addItem(withTitle: voice.displayName)
@@ -237,6 +252,15 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
             apiKeyField.stringValue = ""
         }
 
+        // モデル選択を復元
+        let currentModel = TTSModel.current
+        for (index, item) in modelPopup.itemArray.enumerated() {
+            if item.representedObject as? String == currentModel.rawValue {
+                modelPopup.selectItem(at: index)
+                break
+            }
+        }
+
         updateVoicePopups()
 
         let rate = UserDefaults.standard.double(forKey: "speakingRate")
@@ -260,6 +284,10 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
             KeychainHelper.deleteAPIKey()
         }
 
+        if let modelRaw = modelPopup.selectedItem?.representedObject as? String {
+            UserDefaults.standard.set(modelRaw, forKey: "ttsModel")
+        }
+
         if let jaVoice = japaneseVoicePopup.selectedItem?.representedObject as? String {
             UserDefaults.standard.set(jaVoice, forKey: "japaneseVoice")
         }
@@ -275,7 +303,23 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         speakingRateLabel.stringValue = String(format: "%.1fx", rate)
     }
 
+    /// モデルポップアップから現在の TTSModel を取得
+    private func selectedModel() -> TTSModel {
+        if let rawValue = modelPopup.selectedItem?.representedObject as? String,
+           let model = TTSModel(rawValue: rawValue) {
+            return model
+        }
+        return .neural2
+    }
+
     // MARK: - Actions
+
+    @objc private func modelChanged(_ sender: NSPopUpButton) {
+        // モデルが変わったら音声ポップアップを更新
+        updateVoicePopups()
+        saveSettings()
+        updateEngineState()
+    }
 
     @objc private func voiceChanged(_ sender: NSPopUpButton) {
         saveSettings()
@@ -300,6 +344,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     private func updateEngineState() {
         let hasAPIKey = !apiKeyField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 
+        modelPopup.isEnabled = hasAPIKey
         japaneseVoicePopup.isEnabled = hasAPIKey
         englishVoicePopup.isEnabled = hasAPIKey
 
@@ -370,7 +415,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // すべての UserDefaults を削除して出荷初期状態に戻す
         let defaults = UserDefaults.standard
-        for key in ["googleCloudTTSAPIKey", "japaneseVoice", "englishVoice",
+        for key in ["googleCloudTTSAPIKey", "ttsModel", "japaneseVoice", "englishVoice",
                      "speakingRate", "doubleCopySpeak", "showInDock", "hasLaunchedBefore"] {
             defaults.removeObject(forKey: key)
         }
