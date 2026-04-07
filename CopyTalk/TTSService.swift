@@ -95,8 +95,16 @@ class TTSService {
 
         let voiceName = selectedVoice
 
+        // Chirp 3: HD は中黒「・」で単語を繰り返すことがあるためスペースに置換
+        let inputText: String
+        if voiceName.contains("Chirp3-HD") {
+            inputText = text.replacingOccurrences(of: "・", with: "")
+        } else {
+            inputText = text
+        }
+
         let requestBody: [String: Any] = [
-            "input": ["text": text],
+            "input": ["text": inputText],
             "voice": [
                 "languageCode": language.rawValue,
                 "name": voiceName

@@ -23,12 +23,12 @@ class TextProcessor {
     /// 最初のチャンクを小さくして読み上げ開始を速くする
     /// paragraphBreaks: 段落の最後にあたるチャンクのインデックス（このチャンクの後にポーズを入れる）
     func splitText(_ text: String, model: TTSModel = .neural2) -> (chunks: [String], paragraphBreaks: Set<Int>) {
-        // Chirp 3: HD はセンテンス長制限が厳しいため、チャンクを小さくする
-        let maxBytes: Int
-        switch model {
-        case .neural2:  maxBytes = 4500
-        case .chirp3HD: maxBytes = 300  // 約100文字（日本語UTF-8で1文字3バイト）
+        // Chirp 3: HD はセンテンス長制限が厳しい → 1文=1チャンクで送る
+        if model == .chirp3HD {
+            return splitTextForChirp3HD(text)
         }
+
+        let maxBytes = 4500
 
         // まず段落で分割し、各段落を文単位で分割
         let paragraphs = splitIntoParagraphs(text)
@@ -92,6 +92,34 @@ class TextProcessor {
         return (chunks, paragraphBreaks)
     }
 
+    /// Chirp 3: HD 用のテキスト分割（1文=1チャンク、長い文は句読点で分割）
+    /// 分割された断片には句点を付与してセンテンス終端を明示する
+    private func splitTextForChirp3HD(_ text: String) -> (chunks: [String], paragraphBreaks: Set<Int>) {
+        let paragraphs = splitIntoParagraphs(text)
+        guard !paragraphs.isEmpty else { return ([text], []) }
+
+        var chunks: [String] = []
+        var paragraphBreaks: Set<Int> = []
+
+        for (paragraphIndex, paragraph) in paragraphs.enumerated() {
+            let startIndex = chunks.count
+            let sentences = splitIntoSentences(paragraph)
+
+            for sentence in sentences {
+                let trimmed = sentence.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmed.isEmpty else { continue }
+                chunks.append(trimmed)
+            }
+
+            // 段落の最後のチャンクをマーク
+            if paragraphIndex < paragraphs.count - 1 && chunks.count > startIndex {
+                paragraphBreaks.insert(chunks.count - 1)
+            }
+        }
+
+        return (chunks, paragraphBreaks)
+    }
+
     /// テキストを段落のみで分割する（Apple TTS 用、バイト制限チャンキングなし）
     func splitIntoParagraphsOnly(_ text: String) -> (chunks: [String], paragraphBreaks: Set<Int>) {
         let paragraphs = splitIntoParagraphs(text)
@@ -122,7 +150,7 @@ class TextProcessor {
         if sentences.isEmpty { sentences = [text] }
 
         // 長すぎる文を句読点・読点で追加分割（Chirp 3: HD のセンテンス制限対策）
-        let maxSentenceChars = 100
+        let maxSentenceChars = 60
         var result: [String] = []
         for sentence in sentences {
             if sentence.count <= maxSentenceChars {
@@ -143,21 +171,31 @@ class TextProcessor {
 
         for char in text {
             current.append(char)
-            if current.count >= 30 && delimiters.contains(char) {
+            if current.count >= 20 && delimiters.contains(char) {
                 chunks.append(current)
                 current = ""
             }
         }
         if !current.isEmpty {
-            chunks.append(current)
+            // 残りが短すぎる場合（句点のみ等）は前のチャンクに結合
+            if current.count <= 5 && !chunks.isEmpty {
+                chunks[chunks.count - 1].append(current)
+            } else {
+                chunks.append(current)
+            }
         }
 
-        // 分割できなかった場合（句読点なし）は強制的に分割
-        if chunks.count == 1 && chunks[0].count > maxChars {
-            return splitByCharCount(chunks[0], maxChars: maxChars)
+        // まだ長すぎる断片を強制分割
+        var result: [String] = []
+        for chunk in chunks {
+            if chunk.count > maxChars {
+                result.append(contentsOf: splitByCharCount(chunk, maxChars: maxChars))
+            } else {
+                result.append(chunk)
+            }
         }
 
-        return chunks
+        return mergeShortTail(result)
     }
 
     /// 文字数で強制分割
@@ -174,7 +212,19 @@ class TextProcessor {
         if !current.isEmpty {
             chunks.append(current)
         }
-        return chunks
+        return mergeShortTail(chunks)
+    }
+
+    /// 末尾の短い断片（5文字以下）を前のチャンクに結合する
+    /// 「。」だけが独立チャンクになるのを防止
+    private func mergeShortTail(_ chunks: [String]) -> [String] {
+        guard chunks.count >= 2 else { return chunks }
+        var result = chunks
+        if let last = result.last, last.count <= 5 {
+            result.removeLast()
+            result[result.count - 1].append(last)
+        }
+        return result
     }
 
     /// バイト制限に収まるよう文字列を強制分割
