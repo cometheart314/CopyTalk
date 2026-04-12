@@ -21,6 +21,17 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
     private var doubleCopySpeakCheckbox: NSButton!
     private var showInDockCheckbox: NSButton!
     private var launchAtLoginCheckbox: NSButton!
+    private var infoLabel: NSTextField!
+
+    // Google TTS 関連の UI 要素（非表示切り替え用）
+    private var googleTTSViews: [NSView] = []
+    // Google TTS 関連のラベル（非表示切り替え用）
+    private var googleTTSLabels: [NSView] = []
+
+    private var showAdvanced: Bool {
+        get { UserDefaults.standard.bool(forKey: "showAdvancedSettings") }
+        set { UserDefaults.standard.set(newValue, forKey: "showAdvancedSettings") }
+    }
 
     private let ttsService = TTSService()
     private let appleTTSService = AppleTTSService()
@@ -28,7 +39,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
     convenience init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 450, height: 440),
+            contentRect: NSRect(x: 0, y: 0, width: 450, height: 540),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -57,16 +68,19 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         let labelWidth: CGFloat = 110
         let fieldX: CGFloat = margin + labelWidth + 8
         let fieldWidth: CGFloat = 280
-        var y: CGFloat = 390
+        var y: CGFloat = 450
 
         // API Key
-        contentView.addSubview(makeLabel("API Key:".localized, frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right))
+        let apiKeyLabel = makeLabel("API Key:".localized, frame: NSRect(x: margin, y: y, width: labelWidth, height: 22), alignment: .right)
+        contentView.addSubview(apiKeyLabel)
+        googleTTSLabels.append(apiKeyLabel)
         apiKeyField = NSSecureTextField(frame: NSRect(x: fieldX, y: y, width: fieldWidth, height: 24))
         apiKeyField.placeholderString = "Enter Google Cloud API Key"
         apiKeyField.delegate = self
         apiKeyField.target = self
         apiKeyField.action = #selector(apiKeyChanged)
         contentView.addSubview(apiKeyField)
+        googleTTSViews.append(apiKeyField)
 
         // Engine Status
         y -= 22
@@ -75,10 +89,13 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         engineStatusLabel.font = NSFont.systemFont(ofSize: 12)
         engineStatusLabel.textColor = .secondaryLabelColor
         contentView.addSubview(engineStatusLabel)
+        googleTTSViews.append(engineStatusLabel)
 
         // Model
         y -= 30
-        contentView.addSubview(makeLabel("Model:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        let modelLabel = makeLabel("Model:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right)
+        contentView.addSubview(modelLabel)
+        googleTTSLabels.append(modelLabel)
         modelPopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         for model in TTSModel.allCases {
             modelPopup.addItem(withTitle: model.displayName)
@@ -87,14 +104,18 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         modelPopup.target = self
         modelPopup.action = #selector(modelChanged)
         contentView.addSubview(modelPopup)
+        googleTTSViews.append(modelPopup)
 
         // Japanese Voice
         y -= 30
-        contentView.addSubview(makeLabel("Japanese Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        let jaVoiceLabel = makeLabel("Japanese Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right)
+        contentView.addSubview(jaVoiceLabel)
+        googleTTSLabels.append(jaVoiceLabel)
         japaneseVoicePopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         japaneseVoicePopup.target = self
         japaneseVoicePopup.action = #selector(voiceChanged)
         contentView.addSubview(japaneseVoicePopup)
+        googleTTSViews.append(japaneseVoicePopup)
 
         testJaButton = NSButton(title: "Test".localized, target: self, action: #selector(testSpeakJapanese))
         testJaButton.bezelStyle = .rounded
@@ -102,14 +123,18 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         testJaButton.font = NSFont.systemFont(ofSize: 11)
         testJaButton.frame = NSRect(x: fieldX + 208, y: y, width: 60, height: 26)
         contentView.addSubview(testJaButton)
+        googleTTSViews.append(testJaButton)
 
         // English Voice
         y -= 36
-        contentView.addSubview(makeLabel("English Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right))
+        let enVoiceLabel = makeLabel("English Voice:".localized, frame: NSRect(x: margin, y: y + 2, width: labelWidth, height: 22), alignment: .right)
+        contentView.addSubview(enVoiceLabel)
+        googleTTSLabels.append(enVoiceLabel)
         englishVoicePopup = NSPopUpButton(frame: NSRect(x: fieldX, y: y, width: 200, height: 26))
         englishVoicePopup.target = self
         englishVoicePopup.action = #selector(voiceChanged)
         contentView.addSubview(englishVoicePopup)
+        googleTTSViews.append(englishVoicePopup)
 
         testEnButton = NSButton(title: "Test".localized, target: self, action: #selector(testSpeakEnglish))
         testEnButton.bezelStyle = .rounded
@@ -117,6 +142,7 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         testEnButton.font = NSFont.systemFont(ofSize: 11)
         testEnButton.frame = NSRect(x: fieldX + 208, y: y, width: 60, height: 26)
         contentView.addSubview(testEnButton)
+        googleTTSViews.append(testEnButton)
 
         // Speaking Rate
         y -= 36
@@ -178,21 +204,27 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
 
         // Info (最下段)
         y -= 60
-        let infoLabel = NSTextField(wrappingLabelWithString: "ClipVoice reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above. Google Cloud TTS is free up to 1 million characters per month.".localized)
+        infoLabel = NSTextField(wrappingLabelWithString: "")
         infoLabel.frame = NSRect(x: margin, y: y, width: 410, height: 58)
         infoLabel.font = NSFont.systemFont(ofSize: 11)
         infoLabel.textColor = .secondaryLabelColor
         contentView.addSubview(infoLabel)
 
-        // Version (右下)
+        // Version (右下) — 5回クリックで詳細モード切替
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
-        let versionLabel = NSTextField(labelWithString: "v\(version) (\(build))")
+        let versionLabel = VersionClickLabel(labelWithString: "v\(version) (\(build))")
         versionLabel.font = NSFont.systemFont(ofSize: 10)
         versionLabel.textColor = .labelColor
         versionLabel.alignment = .right
         versionLabel.frame = NSRect(x: margin, y: y - 18, width: 410, height: 14)
+        versionLabel.onSecretTap = { [weak self] in
+            self?.toggleAdvancedMode()
+        }
         contentView.addSubview(versionLabel)
+
+        // 初期表示モードを適用
+        applyAdvancedMode(animated: false)
     }
 
     private func makeLabel(_ title: String, frame: NSRect, alignment: NSTextAlignment) -> NSTextField {
@@ -375,6 +407,38 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         }
     }
 
+    // MARK: - Advanced Mode
+
+    private func toggleAdvancedMode() {
+        showAdvanced = !showAdvanced
+        applyAdvancedMode(animated: true)
+    }
+
+    private func applyAdvancedMode(animated: Bool) {
+        let show = showAdvanced
+        let allGoogleViews = googleTTSViews + googleTTSLabels
+
+        for view in allGoogleViews {
+            view.isHidden = !show
+        }
+
+        // Info テキストを切り替え
+        if show {
+            infoLabel.stringValue = "ClipVoice reads clipboard text aloud using Apple's built-in voices. For higher quality, set a Google Cloud API key above. Google Cloud TTS is free up to 1 million characters per month.".localized
+        } else {
+            infoLabel.stringValue = "ClipVoice reads clipboard text aloud.\nSelect text and press ⌘C twice quickly to start reading.".localized
+        }
+
+        // ウィンドウの高さを調整
+        let targetHeight: CGFloat = show ? 540 : 380
+        guard let window = window else { return }
+        var frame = window.frame
+        let delta = targetHeight - frame.size.height
+        frame.origin.y -= delta
+        frame.size.height = targetHeight
+        window.setFrame(frame, display: true, animate: animated)
+    }
+
     @objc private func doubleCopySpeakChanged(_ sender: NSButton) {
         UserDefaults.standard.set(sender.state == .on, forKey: "doubleCopySpeak")
     }
@@ -416,7 +480,8 @@ class PreferencesWindowController: NSWindowController, NSWindowDelegate, NSTextF
         // すべての UserDefaults を削除して出荷初期状態に戻す
         let defaults = UserDefaults.standard
         for key in ["googleCloudTTSAPIKey", "ttsModel", "japaneseVoice", "englishVoice",
-                     "speakingRate", "doubleCopySpeak", "showInDock", "hasLaunchedBefore"] {
+                     "speakingRate", "doubleCopySpeak", "showInDock", "hasLaunchedBefore",
+                     "showAdvancedSettings"] {
             defaults.removeObject(forKey: key)
         }
 
@@ -507,7 +572,7 @@ class ClickableLinkLabel: NSTextField {
     }
 
     /// 指定座標にリンク属性があればその URL を返す
-    private func linkAt(_ point: NSPoint) -> URL? {
+    func linkAt(_ point: NSPoint) -> URL? {
         guard let attrString = attributedStringValue as NSAttributedString?,
               !attrString.string.isEmpty else { return nil }
         let textStorage = NSTextStorage(attributedString: attrString)
@@ -519,5 +584,27 @@ class ClickableLinkLabel: NSTextField {
         let index = layoutManager.characterIndex(for: point, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
         guard index < attrString.length else { return nil }
         return attrString.attribute(.link, at: index, effectiveRange: nil) as? URL
+    }
+}
+
+// MARK: - バージョンラベル 5回クリックで秘密の設定を開く
+
+class VersionClickLabel: NSTextField {
+    var onSecretTap: (() -> Void)?
+    private var clickCount = 0
+    private var lastClickTime: Date?
+
+    override func mouseDown(with event: NSEvent) {
+        let now = Date()
+        if let last = lastClickTime, now.timeIntervalSince(last) > 2.0 {
+            clickCount = 0
+        }
+        clickCount += 1
+        lastClickTime = now
+
+        if clickCount >= 5 {
+            clickCount = 0
+            onSecretTap?()
+        }
     }
 }
